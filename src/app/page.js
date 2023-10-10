@@ -66,9 +66,6 @@ export default function Home() {
 
   }, [])
 
-  console.log('====================================');
-  console.log("products", products);
-  console.log('====================================');
   const onFilterChange = (name, value) => {
     const updatedFilters = filters.map(filter => {
       if (filter.name === name) {
@@ -122,7 +119,7 @@ export default function Home() {
               <div className={styles.colorsContainer}>
                 {
                   ['red', 'blue', 'orange']?.map(color => (
-                    <div className={styles.color} style={{ backgroundColor: color }}></div>
+                    <div key={color} className={styles.color} style={{ backgroundColor: color }}></div>
                   ))
                 }
               </div>
