@@ -160,3 +160,6 @@
     font-size: 10px;
     font-family: 'Roboto', sans-serif;
 }
+.filterName{
+    text-transform: capitalize
+}

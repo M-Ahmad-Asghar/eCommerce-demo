@@ -2,19 +2,15 @@
 import { useEffect, useState } from 'react';
 import styles from '../app/styles/page.module.css';
 import Filter from './components/Filter';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
+import FilterIcon from './icons/FilterIcon';
+import Cross from './icons/Cross';
 export default function Home() {
   const allFilters = [
     {
       name: 'Categories',
       type: 'normal',
       options: [
-        { name: 'All', value: 'all' },
-        { name: 'Shirts', value: 'shirts' },
-        { name: 'Pants', value: 'pants' },
-        { name: 'Shoes', value: 'shoes' },
-        { name: 'Accessories', value: 'accessories' },
+        { name: 'Loading...', value: 'all' },
       ],
       selected: []
     },
@@ -50,12 +46,37 @@ export default function Home() {
   ]
   const [filters, setFilters] = useState(allFilters)
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
+  const [isExpanded, setIsExpanded] = useState(false)
   const [selectedFilters, setSelectedFilters] = useState([])
-  const router = useRouter();
-  const params = useSearchParams();
-  const categoriesParams = params.get('categories');
-  useEffect(() => {
 
+  async function fetchData(category) {
+    try {
+      const response = await fetch(`https://dummyjson.com/products/category/${category}`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data for category ${category}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function fetchAllCategories(categories) {
+    const promises = categories.map(category => fetchData(category));
+
+    try {
+      const results = await Promise.all(promises);
+      return results;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const getData = () => {
     fetch('https://dummyjson.com/products?limit=10')
       .then(res => {
         res.json().then(allProducts => {
@@ -63,10 +84,35 @@ export default function Home() {
         })
       })
       .then(console.log);
+  }
+  useEffect(() => {
+    fetch('https://dummyjson.com/products/categories')
+      .then(res => res.json().then(categories => {
+        const allCategories = filters.map(filter => {
+          if (filter.name === 'Categories') {
+            return {
+              ...filter,
+              options: [
+                ...categories.map(category => ({ name: category, value: category }))
+              ]
+            }
+          }
+          return filter
+        }
+        )
+        setFilters(allCategories)
+        setCategories(categories)
+      }))
+      .then(console.log);
+
+    getData()
 
   }, [])
 
-  const onFilterChange = (name, value) => {
+  const getFiltersList = (recFilters) => {
+    return recFilters.filter(filter => categories.includes(filter))
+  }
+  const onFilterChange = async (name, value) => {
     const updatedFilters = filters.map(filter => {
       if (filter.name === name) {
         if (typeof value !== 'string') {
@@ -89,11 +135,25 @@ export default function Home() {
     const allSelectedFilters = updatedFilters.map((filter) => {
       return filter.selected
     }).flat().filter(item => typeof item == 'string')
+
+    const filtersList = getFiltersList(allSelectedFilters)
+    const data = await fetchAllCategories(filtersList);
+    const filteredProducts = data.flatMap(category => category.products);
+
+    if (filteredProducts?.length !== 0) {
+      setProducts(filteredProducts)
+    } else {
+      getData()
+    }
     setSelectedFilters(allSelectedFilters)
   }
 
-  const onCross = (value) => {
-    setSelectedFilters(selectedFilters.filter(item => item !== value))
+  const onCross = async (value) => {
+    const remainingFilters = selectedFilters.filter(item => item !== value)
+    setSelectedFilters(remainingFilters)
+    const data = await fetchAllCategories(remainingFilters);
+    const filteredProducts = data.flatMap(category => category.products);
+    setProducts(filteredProducts)
   }
 
   const clearAll = () => {
@@ -105,10 +165,14 @@ export default function Home() {
     })
     setFilters(updatedFilters)
     setSelectedFilters([])
+    getData()
   }
   return (
     <main className={styles.main}>
-      <div>
+      <div className={`${styles.filtersList}  ${isExpanded && styles.filtersListVisible}`}>
+        <div onClick={() => setIsExpanded(!isExpanded)} className={styles.filterIcon}>
+         {isExpanded ? <Cross /> :<FilterIcon />}
+        </div>
         <Filter filters={filters} clearAll={clearAll} onCross={onCross} selectedFilters={selectedFilters} onFilterChange={onFilterChange} />
       </div>
       <div className={styles.productContainer}>

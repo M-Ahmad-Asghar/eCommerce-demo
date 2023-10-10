@@ -1,6 +1,5 @@
 
 .main {
-  min-height: 100vh;
   display: flex;
   align-items: flex-start;
   padding: 80px;
@@ -50,10 +49,45 @@
   color: #6e6e6e;
   margin-top: 5px;
 }
-@media (max-width: 768px) {
+.filtersList{
+  position: relative;
+  background-color: white;
+}
+.filterIcon{
+  width: 20px;
+  position: absolute;
+  right: -30px;
+  display: none;
+  cursor: pointer;
+}
+@media (max-width: 900px) {
+  .filterIcon{
+    display: block;
+  }
+  .filtersList{
+    position: absolute;
+    left: -240px;
+    top: 0;
+    transition: ease-in-out .4s;
+  }
+  .filtersListVisible{
+    left: 0;
+    transition: ease-in-out .4s;
+  }
   .main {
     padding: 40px;
   }
+  .productContainer{
+    padding-left: 0;
+    gap: 20px;
+    padding-top: 30px;
+  }
+}
+@media (max-width: 720px) {
+ .product{
+  width: 100%;
+  height: auto;
+ }
 }
 @media (max-width: 480px) {
   .main {
