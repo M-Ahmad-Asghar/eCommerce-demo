@@ -1,0 +1,43 @@
+.filtersBar {
+    border: 1px solid #ccc;
+    padding: 0 15px 0 15px;
+    width: 240px;
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    font-size: 12px;
+}
+
+.refine {
+    font-weight: bold;
+}
+
+.link {
+    color: rgb(212, 53, 5);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.selectedFilterContainer{
+    border-top: 1px solid #ccc;
+    display: flex;
+    padding-top: 10px;
+    gap: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.selectedFilter{
+    font-size: 12px;
+    font-weight: bold;
+    color: #484848;
+    display: flex;
+    align-items: center;
+}
+.cross{
+    width:20px;
+    margin-top: 3px;
+    cursor: pointer;
+}
