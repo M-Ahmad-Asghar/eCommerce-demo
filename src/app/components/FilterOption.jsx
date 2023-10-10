@@ -51,7 +51,7 @@ const FilterOption = ({ filter, onFilterChange, selectedFilters }) => {
       {type === 'color' && (
         <div className={isExpanded ? styles.optionContainerActive : styles.optionContainer}>
           {options.map(option => (
-            <label className={`${styles.container} ${styles.colorContainer}`}>
+            <label key={option.name} className={`${styles.container} ${styles.colorContainer}`}>
               <p>{option.name}</p>
               <input checked={selectedFilters?.includes(option.name)} onChange={() => handleFilterChange(option.name)} type="checkbox" />
               <span style={{ backgroundColor: option.value }} className={`${styles.checkmark} ${styles.colorCheckmark}`}></span>
