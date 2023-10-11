@@ -4,6 +4,8 @@ import styles from '../app/styles/page.module.css';
 import Filter from './components/Filter';
 import FilterIcon from './icons/FilterIcon';
 import Cross from './icons/Cross';
+import Chevronup from './icons/Chevronup';
+import Funnel from './icons/Funnerl';
 export default function Home() {
   const allFilters = [
     {
@@ -171,30 +173,57 @@ export default function Home() {
     <main className={styles.main}>
       <div className={`${styles.filtersList}  ${isExpanded && styles.filtersListVisible}`}>
         <div onClick={() => setIsExpanded(!isExpanded)} className={styles.filterIcon}>
-         {isExpanded ? <Cross /> :<FilterIcon />}
+          {isExpanded ? <Cross /> : <FilterIcon />}
         </div>
         <Filter filters={filters} clearAll={clearAll} onCross={onCross} selectedFilters={selectedFilters} onFilterChange={onFilterChange} />
       </div>
-      <div className={styles.productContainer}>
-        {
-          products.map((product) => (
-            <div key={product.id} className={styles.product}>
-              <img src={product?.thumbnail} alt="Picture of the author" />
-              <div className={styles.colorsContainer}>
-                {
-                  ['red', 'blue', 'orange']?.map(color => (
-                    <div key={color} className={styles.color} style={{ backgroundColor: color }}></div>
-                  ))
-                }
+      {products?.length ? <div>
+
+        <div className={styles.productContainer}>
+          <div className={styles.header}>
+            <div className={styles.headerLeft}>
+              <div className={styles.headerBold}>
+                <div className={styles.funnel}>
+                  <Funnel />
+                </div>
+                FILTER
               </div>
-              <div className={styles.content}>
-                <div className={styles.title}>{product?.title}</div>
-                <div className={styles.price}>${product?.price}</div>
+              <div className={styles.headerNormal}>Home / Shop</div>
+            </div>
+            <div className={styles.headerLeft}>
+              <div className={styles.headerNormal}>Sowing 1-12 of 36 results</div>
+              <div className={styles.headerBold}>SORT BY NEWNESS
+                <div className={styles.chevDown}>
+                  <Chevronup fill='black' />
+                </div>
               </div>
             </div>
-          ))
-        }
+          </div>
+          <div  className={styles.productContainerInner}>
+            {
+              products.map((product) => (
+                <div key={product.id} className={styles.product}>
+                  <img src={product?.thumbnail} alt="Picture of the author" />
+                  <div className={styles.colorsContainer}>
+                    {
+                      ['red', 'blue', 'orange']?.map(color => (
+                        <div key={color} className={styles.color} style={{ backgroundColor: color }}></div>
+                      ))
+                    }
+                  </div>
+                  <div className={styles.content}>
+                    <div className={styles.title}>{product?.title}</div>
+                    <div className={styles.price}>${product?.price}</div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
       </div>
+        :
+        <div className={styles.loadingContainer}>Loading...</div>
+      }
     </main>
   )
 }
