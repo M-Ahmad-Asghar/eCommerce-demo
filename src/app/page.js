@@ -51,7 +51,78 @@ export default function Home() {
   const [categories, setCategories] = useState([])
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedFilters, setSelectedFilters] = useState([])
+  const [sort, setSort] = useState({
 
+  })
+
+
+  function sortProductsAZ() {
+    const sortedProducts = products.slice().sort((a, b) => a.title.localeCompare(b.title));
+    setProducts(sortedProducts)
+    setSort({
+      ...sort,
+      sortAZ: true,
+      sortZA: false
+
+    })
+  }
+
+  function sortProductsZA() {
+    const sortedProducts = products.slice().sort((a, b) => b.title.localeCompare(a.title));
+    setProducts(sortedProducts)
+    setSort({
+      ...sort,
+      sortZA: true,
+      sortAZ: false
+    })
+  }
+
+  function sortProductsByPriceLowToHigh() {
+    const sortedProducts = products.slice().sort((a, b) => a.price - b.price);
+    setProducts(sortedProducts)
+    setSort({
+      ...sort,
+      sortPriceLowToHigh: true,
+      sortPriceHighToLow: false
+    })
+  }
+
+  function sortProductsByPriceHighToLow() {
+    const sortedProducts = products.slice().sort((a, b) => b.price - a.price);
+    setProducts(sortedProducts)
+    setSort({
+      ...sort,
+      sortPriceHighToLow: true,
+      sortPriceLowToHigh: false
+    })
+  }
+
+  // Sort products by ID ascending
+  function sortProductsByIDAscending() {
+    const sortedProducts = products.slice().sort((a, b) => a.id - b.id);
+    setProducts(sortedProducts)
+    setSort({
+      ...sort,
+      sortIDAscending: true,
+      sortIDDescending: false
+    })
+  }
+
+  // Sort products by ID descending
+  function sortProductsByIDDescending() {
+    const sortedProducts = products.slice().sort((a, b) => b.id - a.id);
+    setProducts(sortedProducts)
+    setSort({
+      ...sort,
+      sortIDDescending: true,
+      sortIDAscending: false
+    })
+  }
+
+
+  console.log('====================================');
+  console.log("products", products);
+  console.log('====================================');
   async function fetchData(category) {
     try {
       const response = await fetch(`https://dummyjson.com/products/category/${category}`);
@@ -191,15 +262,24 @@ export default function Home() {
               <div className={styles.headerNormal}>Home / Shop</div>
             </div>
             <div className={styles.headerLeft}>
-              <div className={styles.headerNormal}>Sowing 1-12 of 36 results</div>
-              <div className={styles.headerBold}>SORT BY NEWNESS
-                <div className={styles.chevDown}>
+            <div onClick={sort.sortAZ ? sortProductsZA : sort.sortZA ? sortProductsAZ : sortProductsZA} className={styles.headerBold}>PRICE {sort.sortAZ ? 'Z-A' : sort.sortZA ? 'Z-A' : 'A-Z'}
+                <div style={{ transform: sort.sortZA && "rotate(0deg)" }} className={styles.chevDown}>
+                  <Chevronup fill='black' />
+                </div>
+              </div>
+              <div onClick={sort.sortPriceLowToHigh ? sortProductsByPriceHighToLow : sort.sortPriceHighToLow ? sortProductsByPriceLowToHigh : sortProductsByPriceHighToLow} className={styles.headerBold}>PRICE {sort.sortPriceLowToHigh ? 'Hight to Low' : sort.sortPriceHighToLow ? 'Low to High' : 'Hight to Low'}
+                <div style={{ transform: sort.sortPriceHighToLow && "rotate(0deg)" }} className={styles.chevDown}>
+                  <Chevronup fill='black' />
+                </div>
+              </div>
+              <div onClick={sort.sortIDAscending ? sortProductsByIDDescending : sort.sortIDDescending ? sortProductsByIDAscending : sortProductsByIDDescending} className={styles.headerBold}>SORT BY {sort.sortIDAscending ? 'OLDNESS' : sort.sortIDDescending ? 'NEWNNESS' : 'OLDNESS'}
+                <div style={{ transform: sort.sortIDDescending && "rotate(0deg)" }} className={styles.chevDown}>
                   <Chevronup fill='black' />
                 </div>
               </div>
             </div>
           </div>
-          <div  className={styles.productContainerInner}>
+          <div className={styles.productContainerInner}>
             {
               products.map((product) => (
                 <div key={product.id} className={styles.product}>

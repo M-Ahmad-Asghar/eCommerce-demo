@@ -73,6 +73,9 @@
   display: none;
   cursor: pointer;
 }
+.invert{
+  transform: rotate(0deg);
+}
 
 @media (max-width: 900px) {
   .filterIcon {
